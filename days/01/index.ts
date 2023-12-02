@@ -1,9 +1,7 @@
+import inputParser from '../util/inputParser'
+
 // Prompt: https://adventofcode.com/2020/day/1
-
-import { readFileSync } from 'fs' 
-import { join } from 'path'
-
-let input: string[] = readFileSync(join(__dirname, 'input.txt'), { encoding: 'utf-8' }).split('\n')
+const input: string[] = inputParser('days/01/input.txt')
 
 let sum = 0 
 let inputLine = 1
@@ -23,20 +21,20 @@ const wordToDigit = {
 for (let line of input) { 
   let numbers = line.match(/\d|one|two|three|four|five|six|seven|eight|nine/g) || []
 
-for (let word in wordToDigit) { 
-  // @ts-ignore 
-  numbers = numbers.map(num => num.replace(new RegExp(word, 'g'), wordToDigit[word as keyof typeof wordToDigit])) 
-}
+  for (let word in wordToDigit) { 
+    // @ts-ignore 
+    numbers = numbers.map(num => num.replace(new RegExp(word, 'g'), wordToDigit[word as keyof typeof wordToDigit])) 
+  }
 
-let firstNumber = numbers[0] 
-let lastNumber = numbers.length > 1 ? numbers[numbers.length - 1] : firstNumber
+  let firstNumber = numbers[0] 
+  let lastNumber = numbers.length > 1 ? numbers[numbers.length - 1] : firstNumber
 
-if (firstNumber && lastNumber) { 
-  let twoDigitNumber = Number(firstNumber + lastNumber) 
-  console.log(`Line ${inputLine}: ${twoDigitNumber}`)
+  if (firstNumber && lastNumber) { 
+    let twoDigitNumber = Number(firstNumber + lastNumber) 
+    console.log(`Line ${inputLine}: ${twoDigitNumber}`)
 
-  sum += twoDigitNumber 
-  inputLine += 1 
+    sum += twoDigitNumber 
+    inputLine += 1 
   }
 }
 
