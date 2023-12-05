@@ -66,13 +66,8 @@ const part2 = (input: string[]): number => {
       const currentSymbol: string = input[row][col]
   
       if (['*'].includes(currentSymbol)) {
-        if (numbersArray.length === 2) {
-          total += numbersArray.reduce((a, b) => a * b, 1)
-          console.log(`  Multiplying ${numbersArray[0]} and ${numbersArray[1]} to get ${numbersArray[0] * numbersArray[1]}`)
-          numbersArray = []
-        }
-        
         console.log(`Found symbol ${currentSymbol} at position (${row}, ${col}):`)
+
         // Check the eight surrounding positions
         for (let i = -1; i <= 1; i++) {
           for (let j = -1; j <= 1; j++) {
@@ -87,13 +82,13 @@ const part2 = (input: string[]): number => {
               const digitMatches: RegExpMatchArray | null = surroundingChar.match(/\d/g)
 
               if (digitMatches) {
-                // Traverse left to find the whole number
+                // Traverse left to find the end of the whole number
                 let wholeNumber = ""
                 for (let k = newCol - 1; k >= 0 && /\d/.test(input[newRow][k]); k--) {
                   wholeNumber = input[newRow][k] + wholeNumber
                 }
   
-                // Traverse right to find the whole number
+                // Traverse back right to build the whole number
                 for (let k = newCol; k < cols && /\d/.test(input[newRow][k]); k++) {
                   wholeNumber += input[newRow][k]
                   input[newRow] = input[newRow].substring(0, k) + '.' + input[newRow].substring(k + 1)
@@ -101,10 +96,21 @@ const part2 = (input: string[]): number => {
 
                 numbersArray.push(parseInt(wholeNumber))
                 console.log(`  Whole number at (${newRow}, ${newCol}): ${wholeNumber}`)
+
+                if (numbersArray.length === 2) {
+                  total += numbersArray.reduce((a, b) => a * b, 1)
+                  console.log(`  Multiplying ${numbersArray[0]} and ${numbersArray[1]} to get ${numbersArray[0] * numbersArray[1]}`)
+                  numbersArray = []
+                }
               }
-            }
-            
+            }            
           }
+        }
+
+        // We're only interested in '*' with two surrounding symbols
+        if (numbersArray.length === 1) {
+          numbersArray = []
+          console.log(`   only found one surrounding number, purging`)
         }
       }
     }
